@@ -10,6 +10,8 @@ The known issue is that ILSourceParser might not be the fastest thing in the wor
 it just needs some additional JIT warming, although there could be a different reason - parsing IL is generally harder than parsing C#, mostly because IL has almost 300
 instructions, and we have to do over 300 checks when parsing method body to parse one instruction.
 
+Available on NuGet: https://nuget.org/packages/ILSourceParser
+
 ### Example
 ```cs
 var syntaxTree = ILSyntaxTree.ParseText(@".assembly MyAssembly { }");

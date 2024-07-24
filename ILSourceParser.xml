@@ -1,0 +1,2016 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ILSourceParser</name>
+    </assembly>
+    <members>
+        <member name="T:ILSourceParser.Common.AccessModifier">
+            <summary>
+            Represents the type of an access modifier in IL code.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.None">
+            <summary>
+            No access modifier is specified.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.Public">
+            <summary>
+            Public - equivalent to <see langword="public"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.Family">
+            <summary>
+            Family - equivalent to <see langword="protected"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.Private">
+            <summary>
+            Private - equivalent to <see langword="private"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.Assembly">
+            <summary>
+            Assembly - equivalent to <see langword="internal"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.FamilyOrAssembly">
+            <summary>
+            FamOrAssem - equivalent to <see langword="protected private"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.AccessModifier.FamilyAndAssembly">
+            <summary>
+            FamAndAssem - equivalent to <see langword="protected internal"/> in C#.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.CallKind">
+            <summary>
+            Represents the type of calling convention in IL code.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.CallKind.Cdecl">
+            <summary>
+            Cdecl calling convention.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.CallKind.StdCall">
+            <summary>
+            Stdcall calling convention.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.CallKind.ThisCall">
+            <summary>
+            Thiscall calling convention.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.CallKind.FastCall">
+            <summary>
+            Fastcall calling convention.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.CallKind.Default">
+            <summary>
+            Default calling convention - this is not a calling convention, rather,
+            the default calling convention is used based on the application.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.HashMode">
+            <summary>
+            Represents the hashing mode for the <c>.hash</c> directive.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.HashMode.SHA1">
+            <summary>
+            The SHA1 algorithm is the default algorithm for .NET Framework apps but is deemed insecure since 2015. Value is 0x00008004.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.HashMode.SHA256">
+            <summary>
+            The SHA256 algorithm is the default algorithm for .NET Core 1.0 and later apps. Value is 0x0000800C.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.HashMode.MD5">
+            <summary>
+            The MD5 algorithm is considered insecure and is not default for any .NET runtime type. Value is 0x00008003.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.HashMode.SHA512">
+            <summary>
+            The SHA512 algorithm is not default for any .NET runtime type but is considered the most secure option. Value is 0x0000800D.
+            </summary>
+            <remarks>
+              <b>Remark: </b> using this algorithm in a .NET application could severely drop down performance.
+            </remarks>
+        </member>
+        <member name="F:ILSourceParser.Common.HashMode.Unknown">
+            <summary>
+            A hashing algorithm that is not recognized. Value is 0x00000000.
+            </summary>
+            <remarks>
+              <b>Remark: </b> if the algorithm is unknown,
+              the application still compiles and runs fine. This is because .NET will
+              silently fall back to the default hashing algorithm if the current one
+              is unknown. So, on .NET Framework, an unknown hashing algorithm will
+              instead result in SHA1, while on .NET Core 1.0 and later, the hashing
+              algorithm will be SHA256.
+            </remarks>
+        </member>
+        <member name="T:ILSourceParser.Common.ITypeTrivia">
+            <summary>
+            Marks a syntax trivia as a type. Those include:
+            <list type="bullet">
+              <item><see cref="T:ILSourceParser.Trivia.TypeAmpersandTrivia"/></item>
+              <item><see cref="T:ILSourceParser.Trivia.TypeArrayTrivia"/></item>
+              <item><see cref="T:ILSourceParser.Trivia.TypeAsteriskTrivia"/></item>
+            </list>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.KnownSpecialMethodType">
+            <summary>
+            Represents the well-known special method name in IL code, typically
+            reserved and/or illegal in C# code but not in IL. These include:
+            <list type="bullet">
+              <item>
+                <c>Finalize</c> - the C# finalizer, like: <c>~MyMethod() { }</c>
+              </item>
+              <item>
+                <c>Operator</c> - not a method, but methods prefixed with <c>op_</c>. Those
+                are methods that specify C# user-defined operators.
+              </item>
+              <item>
+                <c>.ctor</c> - equivalent to a constructor in C#
+              </item>
+              <item>
+                <c>.cctor</c> - equivalent to a static constructor in C#
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.KnownSpecialMethodType.Finalize">
+            <summary>
+            The <c>Finalize()</c> method, typically a finalizer in C# code.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.KnownSpecialMethodType.Operator">
+            <summary>
+            Methods starting with <c>op_</c>, typically user-defined operators in
+            C# code.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.KnownSpecialMethodType.Ctor">
+            <summary>
+            The <c>.ctor</c> method, typically a constructor in C# code.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.KnownSpecialMethodType.Cctor">
+            <summary>
+            The <c>.cctor</c> method, typically a static constructor in C# code.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.Management">
+            <summary>
+            Specifies the management type of a function pointer.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.Management.Managed">
+            <summary>
+            The function pointer is a pointer referring to the managed method.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.Management.Unmanaged">
+            <summary>
+            The function pointer is a pointer referring to the unmanaged method.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.ParameterModifierType">
+            <summary>
+            Represents the type of parameter modifier.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.ParameterModifierType.Out">
+            <summary>
+            Equivalent to <see cref="T:System.Runtime.InteropServices.OutAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.ParameterModifierType.In">
+            <summary>
+            Equivalent to <see cref="T:System.Runtime.InteropServices.InAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.ParameterModifierType.Opt">
+            <summary>
+            Equivalent to <see cref="T:System.Runtime.InteropServices.OptionalAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.ParameterModifierType.Unknown">
+            <summary>
+            Unknown parameter modifier was specified.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.PredefinedTypeKind">
+            <summary>
+            Represents the well-known primitive type in IL code.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Int8">
+            <summary>
+            <c>int8</c> - equivalent to <see cref="T:System.SByte"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Int16">
+            <summary>
+            <c>int16</c> - equivalent to <see cref="T:System.Int16"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Int32">
+            <summary>
+            <c>int32</c> - equivalent to <see cref="T:System.Int32"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Int64">
+            <summary>
+            <c>int64</c> - equivalent to <see cref="T:System.Int64"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.UInt8">
+            <summary>
+            <c>uint8</c> - equivalent to <see cref="T:System.Byte"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.UInt16">
+            <summary>
+            <c>uint16</c> - equivalent to <see cref="T:System.UInt16"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.UInt32">
+            <summary>
+            <c>uint32</c> - equivalent to <see cref="T:System.UInt32"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.UInt64">
+            <summary>
+            <c>uint64</c> - equivalent to <see cref="T:System.UInt64"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Float32">
+            <summary>
+            <c>float32</c> - equivalent to <see cref="T:System.Single"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Float64">
+            <summary>
+            <c>float64</c> - equivalent to <see cref="T:System.Double"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.String">
+            <summary>
+            <c>string</c> - equivalent to <see cref="T:System.String"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Char">
+            <summary>
+            <c>char</c> - equivalent to <see cref="T:System.Char"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Boolean">
+            <summary>
+            <c>bool</c> - equivalent to <see cref="T:System.Boolean"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Object">
+            <summary>
+            <c>object</c> - equivalent to <see cref="T:System.Object"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.Void">
+            <summary>
+            <c>void</c> - equivalent to <see cref="T:System.Void"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.NativeInt">
+            <summary>
+            <c>native int</c> - equivalent to <see cref="T:System.IntPtr"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.NativeUInt">
+            <summary>
+            <c>native uint</c> - equivalent to <see cref="T:System.UIntPtr"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.NativeInt32">
+            <summary>
+            <c>native int32</c> - equivalent to <see cref="T:System.IntPtr"/> in C#.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.PredefinedTypeKind.NativeUInt32">
+            <summary>
+            <c>native uint32</c> - equivalent to <see cref="T:System.UIntPtr"/> in C#.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.PredefinedTypeLookups">
+            <summary>
+            Provides lookups and dictionaries related to IL predefined types.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Common.PredefinedTypeLookups.TypeFunctionLookups">
+            <summary>
+            Represents a lookup that checks whether the given predefined
+            type can be a function or not. For example, passing <see cref="F:ILSourceParser.Common.PredefinedTypeKind.Int32"/>
+            will return <see langword="true"/> because <c>int32(123)</c> is a valid
+            function in IL, but passing <see cref="F:ILSourceParser.Common.PredefinedTypeKind.String"/> will
+            return <see langword="false"/> because <c>string("Hi!")</c> is not a valid
+            function in IL.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Common.PredefinedTypeLookups.TypeParsingLookups">
+            <summary>
+            Represents a lookup that returns <see cref="T:ILSourceParser.Common.PredefinedTypeKind"/> based on
+            the type name. For example, passing the string <c>"int32"</c> will
+            return <see cref="F:ILSourceParser.Common.PredefinedTypeKind.Int32"/>.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.SecurityAction">
+            <summary>
+            Represents a security action- that is, what is used in the <c>.permissionset</c> assembler directive.
+            These are part of Code Access Security (CAS) feature. By default, this assembler directive is
+            only emitted by the compiler in .NET Framework apps - .NET Core and later do.
+            </summary>
+            <remarks>
+              <b>Remark: </b> please note that the security actions are now deprecated in modern .NET versions and should not be used anymore.
+              However, they're still ordinarily seen even in modern .NET Framework code, even though
+              Code Access Security was deprecated way back in 2010. However, by compiling the IL
+              application with a more modern .NET, you will likely not see the <c>.permissionset</c>
+              assembler directive in the decompiled code at all.
+            </remarks>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.Request">
+            <summary>
+            <c>request</c>: Specifies that the assembly requests the specified permissions.
+            The CLR checks if the requested permissions are granted.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.Demand">
+            <summary>
+            <c>demand</c>:  Requires that the assembly has the specified permissions.
+            If not, a security exception is thrown.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.Assert">
+            <summary>
+            <c>assert</c>: Allows the assembly to assert that it has the specified permissions, even if it doesn’t.
+            Use with caution before running the application with this security action.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.Deny">
+            <summary>
+            <c>deny</c>: Explicitly denies the specified permissions to the assembly.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.PermitOnly">
+            <summary>
+            <c>permitonly</c>: Grants only the specified permissions to the assembly, denying all others.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.LinkCheck">
+            <summary>
+            <c>linkcheck</c>: Used during verification to ensure that the assembly doesn’t link against forbidden types or methods.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.InheritCheck">
+            <summary>
+            <c>inheritcheck</c>: Similar to linkcheck but also checks inherited members.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.ReqOpt">
+            <summary>
+            <c>reqopt</c>: Specifies optional permissions that the assembly requests.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.ReqRefuse">
+            <summary>
+            <c>reqrefuse</c>: Specifies permissions that the assembly refuses.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.PreJitGrant">
+            <summary>
+            <c>prejitgrant</c>: Specifies permissions granted during pre-JIT compilation.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.PreJitDeny">
+            <summary>
+            <c>prejitdeny</c>: Specifies permissions denied during pre-JIT compilation.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.NonCasDemand">
+            <summary>
+            <c>noncasdemand</c>: Used for non-CAS (Code Access Security) demands.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.NonCasLinkDemand">
+            <summary>
+            <c>noncaslinkdemand</c>: Used for non-CAS link demands.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.NonCasInheritance">
+            <summary>
+            <c>noncasinheritance</c>: Used for non-CAS inheritance demands
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SecurityAction.ReqMin">
+            <summary>
+            <c>reqmin</c>: Set specifies the minimum permissions required for the assembly to execute.
+            If one of the permissions is not met, a security exception is thrown. This is the default
+            for .NET Framework apps, but is no longer used in .NET.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.SpecialMethodName">
+            <summary>
+            Represents a few special method names.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SpecialMethodName.Ctor">
+            <summary>
+            <c>.ctor</c> - constructor method
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.SpecialMethodName.Cctor">
+            <summary>
+            <c>.cctor</c> - static constructor method
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.TypePrefix">
+            <summary>
+            Represents the type prefix. For example, in this IL code:
+            <code>
+              [MyAssembly]MyNamespace.MyGenericClass&lt;valuetype [System.Runtime]System.Decimal&gt;
+            </code>
+            The first generic parameter of <c>MyNamespace.MyGenericClass</c> is a non-generic
+            type reference, prefixed with <c>valuetype</c>. Since <c>[System.Runtime]System.Decimal</c>
+            is prefixed with <c>valuetype</c>, this will use <see cref="F:ILSourceParser.Common.TypePrefix.ValueType"/>.
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.TypePrefix.Class">
+            <summary>
+            Type prefix <c>class</c>
+            </summary>
+        </member>
+        <member name="F:ILSourceParser.Common.TypePrefix.ValueType">
+            <summary>
+            Type prefix <c>valuetype</c>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Common.UnknownSecurityActionException">
+            <summary>
+            Represents an exception thrown when the security action is undefined.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Common.UnknownSecurityActionException.Action">
+            <summary>
+            The security action as a string which is not known.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Common.UnknownSecurityActionException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:ILSourceParser.Common.UnknownSecurityActionException"/> class.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Common.UnknownSecurityActionException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ILSourceParser.Common.UnknownSecurityActionException"/> class.
+            </summary>
+            <param name="message">Exception message &amp; the security action that wasn't defined.</param>
+        </member>
+        <member name="M:ILSourceParser.Common.UnknownSecurityActionException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ILSourceParser.Common.UnknownSecurityActionException"/> class.
+            </summary>
+            <param name="message">Exception message &amp; the security action that wasn't defined.</param>
+            <param name="innerException">Inner exception.</param>
+        </member>
+        <member name="T:ILSourceParser.ILRootNode">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) root node.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.ILRootNode.DescendantNodes">
+            <summary>
+            Represents every top-level syntax node, excluding
+            descendant nodes. Examples include the following nodes:
+            <list type="bullet">
+              <item><see cref="T:ILSourceParser.Syntax.AssemblyDeclarationSyntax"/></item>
+              <item><see cref="T:ILSourceParser.Syntax.ClassDeclarationSyntax"/></item>
+              <item><see cref="T:ILSourceParser.Syntax.FileAlignmentDirectiveSyntax"/></item>
+              <item><see cref="T:ILSourceParser.Syntax.ImageBaseDirectiveSyntax"/></item>
+            </list>
+            ... etc
+            <para/>
+            But, not these:
+            <list type="bullet">
+              <item><see cref="T:ILSourceParser.Syntax.FieldOrPropertyReferenceSyntax"/> - only inside of a class</item>
+              <item><see cref="T:ILSourceParser.Syntax.PermissionSetSyntax"/> - only inside of an assembly</item>
+              <item><see cref="T:ILSourceParser.Syntax.CustomAttributeSyntax"/> - only inside of a method, class, property, assembly, etc</item>
+              <item><see cref="T:ILSourceParser.Syntax.Instructions.InstructionSyntax"/> - only inside of a method</item>
+            </list>
+            ... etc
+            <para/>
+            Example IL code to demonstrate:
+            <example>
+              <code>
+            // Root here
+            .assembly MyAssembly
+            {
+                // Descendant nodes not associated here, but are part
+                // of AssemblyDeclarationSyntax
+                .ver 1:2:3:4
+            }
+            
+            // This node will be included
+            .imagebase 0x00400000
+              </code>
+            </example>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.ILRootNode.HasNoCode">
+            <summary>
+            Checks whether the syntax root does not contain any code (e.g. it is
+            either empty or consists of comment syntax nodes only).
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.ILRootNode.HasDescendantNodes">
+            <summary>
+            Checks whether the syntax root does not contain any syntax nodes at all.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.CountRootScopedSyntaxNodeTrivia">
+            <summary>
+            Calculates sum of leading and trailing trivias of every top-level syntax node.
+            </summary>
+            <returns>A number of leading and trailing trivias in root scoped syntax nodes.</returns>
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.Equals(System.Object)">
+            <inheritdoc cref="M:System.Object.Equals(System.Object)" />
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.Equals(ILSourceParser.ILRootNode)">
+            <inheritdoc cref="M:System.IEquatable`1.Equals(`0)" />
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.GetHashCode">
+            <inheritdoc cref="M:System.Object.GetHashCode" />
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.op_Equality(ILSourceParser.ILRootNode,ILSourceParser.ILRootNode)">
+            <summary>
+            Checks whether the left root node is equal to the right root node.
+            </summary>
+            <param name="left">The left root node to compare from.</param>
+            <param name="right">The right root node to compare with.</param>
+            <returns>A boolean, indicating whether the left root node is equal to another or not.</returns>
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.op_Inequality(ILSourceParser.ILRootNode,ILSourceParser.ILRootNode)">
+            <summary>
+            Checks whether the left root node is different from the right root node.
+            </summary>
+            <param name="left">The left root node to compare from.</param>
+            <param name="right">The right root node to compare with.</param>
+            <returns>A boolean, indicating whether the left root node is different from another or not.</returns>
+        </member>
+        <member name="M:ILSourceParser.ILRootNode.DifferentiateRootNodes(ILSourceParser.ILRootNode)">
+            <summary>
+            Returns a sequence containing syntax nodes different from each other compared
+            to <paramref name="other"/> syntax root.
+            </summary>
+            <param name="other">The other syntax root to compare descendant nodes with.</param>
+            <returns>Sequence containing top-level syntax nodes different with this and other syntax root.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when this and other syntax root do not have equal amounts of descendant nodes.</exception>
+        </member>
+        <member name="T:ILSourceParser.ILSyntaxTree">
+            <summary>
+            Provides functionality for parsing Microsoft Intermediate Language (IL) syntax
+            into a syntax tree.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.ILSyntaxTree.ParseText(System.String)">
+            <summary>
+            Parses IL source into a syntax tree.
+            </summary>
+            <param name="text">A string that represents the IL source code.</param>
+            <returns>A new <see cref="T:ILSourceParser.SyntaxTree"/> that represents IL syntax tree.</returns>
+        </member>
+        <member name="M:ILSourceParser.ILSyntaxTree.ParseText(System.String,System.String)">
+            <summary>
+            Parses IL source into a syntax tree.
+            </summary>
+            <param name="text">A string that represents the IL source code.</param>
+            <param name="filePath">The path to the source file containing IL code.</param>
+            <returns>A new <see cref="T:ILSourceParser.SyntaxTree"/> that represents IL syntax tree.</returns>
+        </member>
+        <member name="M:ILSourceParser.ILSyntaxTree.ParseTextAsync(System.String)">
+            <summary>
+            Parses IL source into a syntax tree.
+            </summary>
+            <param name="text">A string that represents the IL source code.</param>
+            <returns>A new <see cref="T:ILSourceParser.SyntaxTree"/> that represents IL syntax tree.</returns>
+        </member>
+        <member name="M:ILSourceParser.ILSyntaxTree.ParseTextAsync(System.String,System.String)">
+            <summary>
+            Parses IL source into a syntax tree.
+            </summary>
+            <param name="text">A string that represents the IL source code.</param>
+            <param name="filePath">The path to the source file containing IL code.</param>
+            <returns>A new <see cref="T:ILSourceParser.SyntaxTree"/> that represents IL syntax tree.</returns>
+        </member>
+        <member name="T:ILSourceParser.Internal.Anonymous">
+            <summary>
+            Empty class used to make 'ILSourceParser.Private' a valid namespace
+            in order to match the folder structure. Please do not use.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Parser">
+            <summary>
+            Core parser for the Intermediate Language (IL) source syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.SyntaxTree">
+            <summary>
+            Represents the Intermediate Language syntax tree.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.SyntaxTree.GetRoot">
+            <summary>
+            Returns the root node for the IL syntax tree.
+            </summary>
+            <returns>A root syntax node that specifies the top-level syntax nodes.</returns>
+        </member>
+        <member name="M:ILSourceParser.SyntaxTree.GetRootAsync">
+            <summary>
+            Returns the root node for the IL syntax tree asynchronously.
+            </summary>
+            <returns>A root syntax node that specifies the top-level syntax nodes.</returns>
+        </member>
+        <member name="P:ILSourceParser.SyntaxTree.FilePath">
+            <summary>
+            Returns the name of the source file where its contents were parsed into
+            IL syntax tree. This throws an <see cref="T:System.InvalidOperationException"/>
+            by default while getting the file path.
+            To ensure the source file is specified, use the <see cref="P:ILSourceParser.SyntaxTree.IsFilePathInitialized"/>
+            property.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.SyntaxTree.IsFilePathInitialized">
+            <summary>
+            Checks whether the file path is specified. Returns <see langword="false" />. To specify
+            the source file, change the <see cref="P:ILSourceParser.SyntaxTree.FilePath"/> property.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.AccessorSyntax">
+            <summary>
+            This node is associated with the following kinds:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.GetAccessorSyntax"/>  
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.SetAccessorSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.AddOnAccessorSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.RemoveOnAccessorSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.AccessorSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.AccessorSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.AddOnAccessorSyntax">
+            <summary>
+            Represents the IL <c>.addon</c> accessor, similar to C#'s event <c>add</c> accessor.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.AddOnAccessorSyntax.Target">
+            <summary>
+            Accessors in IL code typically reference to another method that contains actual
+            implementation of the accessor. This property references a method that contains
+            the implementation of the accessor.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.AnonymousCustomAttributeSyntax">
+            <summary>
+            Represents an anonymous custom attribute in IL code. This is a type of
+            custom attribute that does not contain any byte data. Example:
+            <code>
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor()
+              
+              // There is no "= ( 01 00 00 00 )" after "::.ctor()", so this is an anonymous
+              // custom attribute.
+            </code>
+            There is a different syntax node to represent custom attributes that contain
+            byte data, which is <see cref="T:ILSourceParser.Syntax.CustomAttributeSyntax"/>.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.AnonymousCustomAttributeSyntax.AttributeConstructorTarget">
+            <summary>
+            Represents the invocation to the constructor. For example, in this
+            custom attribute:
+            <code>
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor()
+            </code>
+            .. this property will hold a reference to <c>[System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor()</c>,
+            specifically the constructor method <c>.ctor()</c>, and the
+            return type <c>instance void</c>.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.ArgumentCollectionBaseSyntax">
+            <summary>
+            This node is associated with the following nodes:
+            <list type="bullet">
+              <item><see cref="T:ILSourceParser.Syntax.GenericArgumentsDefinitionSyntax"/></item>
+              <item><see cref="T:ILSourceParser.Syntax.GenericArgumentsReferenceSyntax"/></item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.ArgumentCollectionBaseSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ArgumentCollectionBaseSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ArgumentCollectionBaseSyntax.Parameters">
+            <summary>
+            A list of parameters passed to the argument collection.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.ArgumentListReferenceSyntax">
+            <summary>
+            Represents a syntax node for argument list references. This is used in
+            <see cref="T:ILSourceParser.Syntax.MethodInvocationSyntax"/> to specify parameters passed to the
+            method that's being invoked.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.ArgumentListReferenceSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ArgumentListReferenceSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ArgumentListReferenceSyntax.Arguments">
+            <summary>
+            An enumerable of parameters passed to the method being invoked.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.AssemblyDeclarationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.AssemblyDeclarationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.AssemblyReferenceSyntax">
+            <summary>
+            Represents a syntax node for assembly references. For example, in this type reference:
+            <example>
+              <code>
+                [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor()
+              </code>
+            </example>
+            .. "[System.Runtime]" will be part of this syntax node.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.AssemblyReferenceSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.AssemblyReferenceSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.AssemblyReferenceSyntax.AssemblyName">
+            <summary>
+            Represents the name of the assembly in the assembly reference. For example, in this type reference:
+            <example>
+              <code>
+                [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor()
+              </code>
+            </example>
+            .. this property will hold a value of "System.Runtime". Brackets at start
+            and end are removed automatically.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.BaseCommentSyntax">
+            <summary>
+            This node is associated with the following types:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.InlineCommentSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.MultilineCommentSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.BaseCommentSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.BaseCommentSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.BaseCustomAttributeSyntax">
+            <summary>
+            This node is associated with the following kinds:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.CustomAttributeSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.AnonymousCustomAttributeSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.BaseCustomAttributeSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.BaseCustomAttributeSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.BaseGenericParameterSyntax">
+            <summary>
+            Base class for generic parameters. This node is associated with the following nodes:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.GenericParameterPrimitiveSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.GenericParameterReferenceSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.GenericParameterTypeConstraintSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.BaseGenericParameterSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.BaseGenericParameterSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.BooleanFunctionSyntax">
+            <summary>
+            Represents the <c>bool()</c> IL function.
+            </summary>
+            <remarks>
+              Not to be confused with a simple <c>bool</c> type, this node specifies the
+              <c>bool()</c> function, e.g. <c>bool(true)</c>.
+            </remarks>
+        </member>
+        <member name="P:ILSourceParser.Syntax.BooleanFunctionSyntax.Value">
+            <summary>
+            A boolean passed to the function.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.BooleanLiteralSyntax">
+            <summary>
+            Represents an IL boolean literal - e.g. <c>true</c> or <c>false</c> keyword.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.BooleanLiteralSyntax.Value">
+            <summary>
+            Represents the value of the literal. This string can only hold a value
+            of <c>true</c> or <c>false</c>.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.ByteArraySyntax">
+            <summary>
+            Represents a syntax node for the <c>bytearray()</c> IL type.
+            </summary>
+            <remarks>
+              Not to be confused with the byte array, this node refers to the <c>bytearray(...)</c>
+              IL type. Byte arrays are simply represented as <see cref="T:System.Collections.Generic.IEnumerable`1"/>
+              of type <see cref="T:ILSourceParser.Syntax.ByteSyntax"/>.
+            </remarks>
+        </member>
+        <member name="P:ILSourceParser.Syntax.ByteArraySyntax.Bytes">
+            <summary>
+            A list of bytes passed to the <c>bytearray</c> type.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.ByteSyntax">
+            <summary>
+            Represents a syntax node for a byte - e.g. <c>0x05</c> or <c>1c</c>. This node is
+            typically returned by syntax nodes that heavily rely on bytes, f.e. <see cref="T:ILSourceParser.Syntax.CustomAttributeSyntax"/>
+            or <see cref="T:ILSourceParser.Syntax.PermissionSetSyntax"/>.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.ByteSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ByteSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ByteSyntax.Value">
+            <summary>
+            Represents the raw value of the byte. For instance, if <c>1c</c> was specified,
+            this string will hold the value of <c>1c</c>. Value may be prefixed with the
+            hexadecimal integer prefix (0x). The length of this string is always 2 characters.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.ClassDeclarationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ClassDeclarationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.CorFlagsDirectiveSyntax">
+            <summary>
+            Represents the IL <c>.corflags</c> directive.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.CorFlagsDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.CorFlagsDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.CorFlagsDirectiveSyntax.Flags">
+            <summary>
+            The value of the COR flags. For example, in this code:
+            <code>
+              .corflags 0x12345678
+            </code>
+            .. this property will hold a string, with value "0x12345678".
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.CustomAttributeSyntax">
+            <summary>
+            Represents an anonymous custom attribute in IL code, similar to C#'s attributes. Example:
+            <code>
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor() = (
+                  01 00 00 00
+              )
+            </code>
+            There is a different syntax node to represent custom attributes that omit the
+            byte data <c>= ( 01 00 00 00 )</c>, which is <see cref="T:ILSourceParser.Syntax.AnonymousCustomAttributeSyntax"/>.
+            </summary>
+            <remarks>
+              It is important to acknowledge that parsing attribute byte data in IL is
+              harder than in C# and generally requires a deeper understanding on how
+              attributes in IL bytecode work.
+            </remarks>
+        </member>
+        <member name="P:ILSourceParser.Syntax.CustomAttributeSyntax.AttributeConstructorTarget">
+            <summary>
+            Represents the invocation to the constructor. For example, in this
+            custom attribute:
+            <code>
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor() = (
+                  01 00 00 00
+              )
+            </code>
+            .. this property will hold a reference to <c>[System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor()</c>,
+            specifically the constructor method <c>.ctor()</c>, and the
+            return type <c>instance void</c>.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.CustomAttributeSyntax.AttributeData">
+            <summary>
+            Represents the attribute data of this custom attribute. For example,
+            in this custom attribute:
+            <code>
+              .custom instance void [System.Runtime]System.Runtime.CompilerServices.NullableAttribute::.ctor() = (
+                  01 00 00 00
+              )
+            </code>
+            .. this property will hold byte data of the custom attribute,
+            being <c>01 00 00 00</c> combined.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.EntryPointDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.EntryPointDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.EventDeclarationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.EventDeclarationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FieldOrPropertyReferenceSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FieldOrPropertyReferenceSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FileAlignmentDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FileAlignmentDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FileDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FileDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.FinallyBlockSyntax">
+            <summary>
+            Represents an IL <c>finally</c> block.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.FinallyBlockSyntax.DescendantNodes">
+            <summary>
+            Descendant nodes of the block.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.FunctionPointerInvocationSyntax">
+            <summary>
+            This node is associated with the following kinds:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.ManagedFunctionPointerInvocationSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.UnmanagedFunctionPointerInvocationSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.FunctionPointerInvocationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.FunctionPointerInvocationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.GetAccessorSyntax">
+            <summary>
+            Represents the IL <c>.get</c> accessor, similar to C#'s property <c>get</c> accessor.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.GetAccessorSyntax.Target">
+            <summary>
+            Accessors in IL code typically reference to another method that contains actual
+            implementation of the accessor. This property references a method that contains
+            the implementation of the accessor.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.HashAlgorithmSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.HashAlgorithmSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ImageBaseDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ImageBaseDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.Instructions.ArgumentLoadOpCodeSyntax.Index">
+            <summary>
+            The index of the argument. Example:
+            <example>
+              <code>
+            ldarg 42
+              </code>
+            </example>
+            In the example above, the value of this property will be 42.
+            </summary>
+            <remarks>
+            <b>Remark</b>: If the value of this property is <see langword="NULL"/>, this
+            means that the opcode that loads argument by index does not require an
+            explicit index to be specified. For example, the instruction <c>ldarg.0</c>
+            doesn't take any parameters and is just an equivalent to <c>ldarg 0</c>, although
+            that instruction is still categorized as <see cref="T:ILSourceParser.Syntax.Instructions.ArgumentLoadOpCodeSyntax"/>.
+            </remarks>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Instructions.ArgumentStoreOpCodeSyntax.Index">
+            <summary>
+            The index of the argument. Example:
+            <example>
+              <code>
+            starg 42
+              </code>
+            </example>
+            In the example above, the value of this property will be 42.
+            </summary>
+            <remarks>
+            <b>Remark</b>: If the value of this property is <see langword="NULL"/>, this
+            means that the opcode that loads argument by index does not require an
+            explicit index to be specified. For example, the instruction <c>starg.0</c>
+            doesn't take any parameters and is just an equivalent to <c>starg 0</c>, although
+            that instruction is still categorized as <see cref="T:ILSourceParser.Syntax.Instructions.ArgumentLoadOpCodeSyntax"/>.
+            </remarks>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Instructions.InstructionSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.Instructions.InstructionSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.BoxOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>box</c> instruction syntax.
+            This instruction pops the last value from the evaluation stack, performs type boxing
+            on it, and pushes the result back onto the stack. The parameter specifies the type of
+            the object being boxed.
+            </summary>
+            <remarks>
+            In simple terms, this type casts last item from stack to <see cref="T:System.Object"/> type.
+            </remarks>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.CalliOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>calli</c> instruction syntax.
+            This instruction is used to invoke the given function pointer and push its result onto the evaluation stack.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.CallOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>call</c> instruction syntax.
+            This instruction is used to invoke the given method and push its result onto the evaluation stack.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.CallvirtOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>callvirt</c> instruction syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.CastclassOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>castclass</c> instruction syntax.
+            This instruction is used to cast an instance of an object to another type. Casting is
+            guaranteed to complete at compile time, but may not complete at runtime type.
+            </summary>
+            <remarks>
+              IL:
+              <code>
+            // public class A { }
+            .class public A
+            {
+            }
+            
+            // public class B { }
+            .class public B
+            {
+            }
+            
+            .class public sealed Program
+            {
+                .method public static void Main()
+                {
+                    .entrypoint
+                    .locals init (
+                        [0] A 'My A Variable'
+                    )
+            
+                    // A a = new A();
+                    newobj instance void A::.ctor()
+                    stloc.0
+                    ldloc.0
+                    
+                    // B b = (B)(object)a;
+                    castclass B // Convert A to B
+                    pop
+                    ret
+                }
+            }
+              </code>
+            </remarks>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.CpobjOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>cpobj</c> instruction.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.InitobjOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>initobj</c> instruction.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.IsinstOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>isinst</c> instruction. This instruction
+            is used to test whether the last object on the evaluation stack is of given type or
+            not. It pushes a boolean on stack. Example:
+            <example>
+              IL:
+              <code>
+                newobj instance void [System.Private.CoreLib]System.Random::.ctor()
+                isinst [System.Private.CoreLib]System.Text.StringBuilder
+                // Pushes 'false' because last item on the stack is of type Random, not StringBuilder
+              </code>
+              C# equivalent:
+              <code>
+                using System;
+                using System.Text;
+                
+                var random = new Random();
+                var flag = random is StringBuilder; // this is isinst instruction here
+              </code>
+            </example>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.JmpOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>jmp</c> instruction syntax.
+            This instruction is used to transfer control to a different method. Each method
+            can use this instruction just once because any code after the instruction is unreachable
+            since control is transferred to a different method. Example:
+            <para/>
+            <example>
+              IL:
+              <code>
+            .method public hidebysig static int32 M() cil managed
+            {
+                .entrypoint
+                jmp void C::X()
+                // Code down here is unreachable
+            }
+            
+            .method private static int32 X()
+            {
+               ldc.i4 42
+               ret
+            }
+              </code>
+              C#:
+              <code>
+            public static int M()
+            {
+                return X();
+            }
+            
+            private static int X()
+            {
+                return 42;
+            }
+              </code>
+            </example>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdfldaOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldflda</c> instruction.
+            This instruction is used to load the address of the given field onto the stack. Example:
+            <para/>
+            <example>
+              IL:
+              <code>
+            .class public C
+            {
+                .field initonly string MyString = "abc"
+                
+                .method public void X()
+                {
+                    // create new instance of C 'C c = new C()'
+                    newobj instance void C::.ctor()
+                    
+                    // 'ref string reference = ref c.MyString'
+                    ldflda string C::MyString
+                    
+                    ret
+                }
+            }
+              </code>
+              C#:
+              <code>
+            public class C
+            {
+                public string MyString = "abc"; // It is not recommended to keep fields public like this but this is just a demo after all
+                
+                public void X()
+                {
+                    C c = new C();
+                    ref string reference = ref c.MyString;
+                }
+            }
+              </code>
+            </example>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdfldOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldfld</c> instruction.
+            This instruction is used to load the value of the given field onto the evaluation stack.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdftnOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldftn</c> instruction syntax.
+            This instruction is used to create and push a function pointer for the given method onto the
+            evaluation stack. The <see cref="P:ILSourceParser.Syntax.Instructions.OpCodes.LdftnOpCodeSyntax.Target"/> property specifies the method to create the
+            function pointer for.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdsfldaOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldsflda</c> instruction.
+            This instruction is used to load the address of the given static field onto the stack. Example:
+            <para/>
+            <example>
+              IL:
+              <code>
+            .class public C
+            {
+                .field static initonly string MyString = "abc"
+                
+                .method public void X()
+                {
+                    // 'ref string reference = ref c.MyString'
+                    ldsflda string C::MyString
+                    
+                    ret
+                }
+            }
+              </code>
+              C#:
+              <code>
+            public class C
+            {
+                public static string MyString = "abc"; // It is not recommended to keep fields public like this but this is just a demo after all
+                
+                public void X()
+                {
+                    ref string reference = MyString;
+                }
+            }
+              </code>
+            </example>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdsfldOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldsfld</c> instruction.
+            This instruction is used to load the value of the given static field onto the evaluation stack.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdstrOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldstr</c> instruction.
+            This instruction is used to push a string onto the evaluation stack.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LdvirtftnOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>ldftn</c> instruction syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LeaveOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>leave</c> instruction.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.LeaveSOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>leave.s</c> instruction.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.MkrefanyOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>mkrefany</c> instruction syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.NewarrOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>newarr</c> instruction syntax.
+            This instruction is used to create a new array of given type. It also pops one integer
+            from the stack, which specifies the amount of items in the array. Example:
+            <para/>
+            <example>
+              IL:
+              <code>
+                ldc.i4 24
+                newarr [MyAssembly]MyClass
+              </code>
+              C#:
+              <code>
+                MyClass[] myClass = new MyClass[24];
+              </code>
+            </example>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.NewobjOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>newobj</c> instruction syntax.
+            This instruction creates a new instance of the given object and pushes it onto the
+            evaluation stack.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.RefanyvalOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>refanyval</c> instruction syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.SizeofOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>sizeof</c> instruction syntax.
+            This instruction is used to push 'uint32' onto the stack that represents the size of
+            the given type in bytes. For instance, <c>sizeof(int)</c> in C# will be translated to <c>sizeof int32</c> or <c>sizeof [System.Private.CoreLib]System.Int32</c> in IL.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.StfldOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>stsfld</c> instruction.
+            This instruction is used to store data to the given field.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.StobjOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>stobj</c> instruction syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.StsfldOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>stsfld</c> instruction.
+            This instruction is used to store data to the given static field.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.SwitchOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>switch</c> instruction syntax.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.UnboxAnyOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>unbox</c> instruction syntax.
+            This instruction is used to unbox the last item on the evaluation stack - that is,
+            converting type <see langword="object"/> to the given <see cref="P:ILSourceParser.Syntax.Instructions.OpCodes.UnboxAnyOpCodeSyntax.Type"/>.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Instructions.OpCodes.UnboxOpCodeSyntax">
+            <summary>
+            Represents the Microsoft Intermediate Language (IL) <c>unbox</c> instruction syntax.
+            This instruction is used to unbox the last item on the evaluation stack - that is,
+            converting type <see langword="object"/> to the given <see cref="P:ILSourceParser.Syntax.Instructions.OpCodes.UnboxOpCodeSyntax.Type"/>. After this,
+            it pushes a managed pointer to the result onto the evaluation stack.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.LabelSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LabelSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LineDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LineDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LiteralSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LiteralSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.LocalsDirectiveSyntax">
+            <summary>
+            Represents the IL <c>.locals</c> directive.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.LocalsDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LocalsDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LocalsDirectiveSyntax.IsLocalsInit">
+            <summary>
+            Specifies whether the <c>init</c> flag is passed or not (e.g. is this <c>.locals init</c>
+            or just <c>.locals</c>?).
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.LocalsDirectiveSyntax.Variables">
+            <summary>
+            Represents variables of this directive.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.LocalVariableSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.LocalVariableSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.ByValArrayMarshalTypeSyntax">
+            <summary>
+            Represents a <c>byval array</c> marshalling type with the size constant.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.ByValArrayMarshalTypeSyntax.SizeConst">
+            <summary>
+            The size constant of the array.
+            Equivalent to <see cref="F:System.Runtime.InteropServices.MarshalAsAttribute.SizeConst"/>.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.ByValTStrMarshalTypeSyntax">
+            <summary>
+            Represents a <c>byval tstr</c> marshalling type with the size constant.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.ByValTStrMarshalTypeSyntax.SizeConst">
+            <summary>
+            The size constant of the array.
+            Equivalent to <see cref="F:System.Runtime.InteropServices.MarshalAsAttribute.SizeConst"/>.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.CustomMarshalTypeSyntax">
+            <summary>
+            Represents a <c>custom</c> marshalling type.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.CustomMarshalTypeSyntax.AssemblyString">
+            <summary>
+            Equivalent to <see cref="F:System.Runtime.InteropServices.MarshalAsAttribute.MarshalTypeRef"/>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.CustomMarshalTypeSyntax.Cookie">
+            <summary>
+            Equivalent to <see cref="F:System.Runtime.InteropServices.MarshalAsAttribute.MarshalCookie"/>
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.FieldMarshalSyntax">
+            <summary>
+            Represents IL <c>marshal()</c> for fields.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.MarshalSyntax">
+            <summary>
+            Represents IL <c>marshal()</c> function.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.MarshalSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.MarshalSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.MarshalTypeSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.Marshaling.MarshalTypeSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.ParameterMarshalSyntax">
+            <summary>
+            Represents IL <c>marshal()</c> for method parameters.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.Marshaling.ReturnMarshalSyntax">
+            <summary>
+            Represents IL <c>marshal()</c> for return types.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.MaxStackDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MaxStackDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodCallSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodCallSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodDeclarationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodDeclarationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodFlagSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodFlagSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodInvocationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodInvocationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodReferenceWithOmittedArgsSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.MethodReferenceWithOmittedArgsSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.ModifierNotationSyntax">
+            <summary>
+            This node is associated with the following types:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.ModOptSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.ModReqSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.ModifierNotationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ModifierNotationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ModuleDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ModuleDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.OverrideDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.OverrideDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PackDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PackDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ParamDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ParamDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ParameterModifierSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ParameterModifierSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ParameterSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.ParameterSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.PermissionSetSyntax">
+            <summary>
+            Represents the IL <c>.permissionset</c> directive syntax.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.PermissionSetSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PermissionSetSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PermissionSetSyntax.SecurityAction">
+            <summary>
+            Represents the security action for this permission set. For example, in the
+            following example:
+            <code>
+              .permissionset reqmin = (
+                  // ...
+              )
+            </code>
+            .. this property will have a value of <see cref="F:ILSourceParser.Common.SecurityAction.ReqMin"/>.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.PermissionSetSyntax.ByteArray">
+            <summary>
+            The byte array that contains the bytes of the permission set.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.PInvokeEntryPointSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PInvokeEntryPointSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PInvokeImplSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PInvokeImplSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PropertyDeclarationSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.PropertyDeclarationSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.RemoveOnAccessorSyntax">
+            <summary>
+            Represents the IL <c>.removeon</c> accessor, similar to C#'s event <c>remove</c> accessor.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.RemoveOnAccessorSyntax.Target">
+            <summary>
+            Accessors in IL code typically reference to another method that contains actual
+            implementation of the accessor. This property references a method that contains
+            the implementation of the accessor.
+            </summary>
+        </member>
+        <member name="T:ILSourceParser.Syntax.SetAccessorSyntax">
+            <summary>
+            Represents the IL <c>.set</c> accessor, similar to C#'s property <c>set</c> accessor.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.SetAccessorSyntax.Target">
+            <summary>
+            Accessors in IL code typically reference to another method that contains actual
+            implementation of the accessor. This property references a method that contains
+            the implementation of the accessor.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.SizeDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.SizeDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.StackReserveDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.StackReserveDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.SubsystemDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.SubsystemDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.SwitchInstructionBodySyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.SwitchInstructionBodySyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.TryBlockSyntax">
+            <summary>
+            Represents an IL <c>.try</c> block.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.TryBlockSyntax.DescendantNodes">
+            <summary>
+            Descendant nodes of the block.
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.TypeDeclarationNameSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.TypeDeclarationNameSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Syntax.TypeReferenceSyntax">
+            <summary>
+            This node is associated with the following kinds:
+            <list type="bullet">
+              <item>
+                <see cref="T:ILSourceParser.Syntax.NonGenericTypeReferenceSyntax"/>
+              </item>
+              <item>
+                <see cref="T:ILSourceParser.Syntax.GenericTypeReferenceSyntax"/>
+              </item>
+            </list>
+            </summary>
+        </member>
+        <member name="P:ILSourceParser.Syntax.TypeSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.TypeSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.VerDirectiveSyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.VerDirectiveSyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.VTableEntrySyntax.LeadingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.LeadingTrivia" />
+        </member>
+        <member name="P:ILSourceParser.Syntax.VTableEntrySyntax.TrailingTrivia">
+            <inheritdoc cref="P:ILSourceParser.Syntax.SyntaxNode.TrailingTrivia" />
+        </member>
+        <member name="T:ILSourceParser.Utilities.AsByteExtension">
+            <summary>
+            Represents a single extension method that provides the <see cref="M:ILSourceParser.Utilities.AsByteExtension.AsByte(ILSourceParser.Syntax.ByteSyntax)"/> method
+            to <see cref="T:ILSourceParser.Syntax.ByteSyntax"/>.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Utilities.AsByteExtension.AsByte(ILSourceParser.Syntax.ByteSyntax)">
+            <summary>
+            Converts the string value of <see cref="T:ILSourceParser.Syntax.ByteSyntax"/> as <see cref="T:System.Byte"/>.
+            </summary>
+            <param name="syntax">The input <see cref="T:ILSourceParser.Syntax.ByteSyntax"/>.</param>
+            <returns><see cref="T:ILSourceParser.Syntax.ByteSyntax"/> value converted to <see cref="T:System.Byte"/>.</returns>
+        </member>
+        <member name="T:ILSourceParser.Utilities.AsParameterMarshalExtension">
+            <summary>
+            Converts <see cref="T:ILSourceParser.Syntax.Marshaling.MarshalTypeSyntax"/> to <see cref="T:ILSourceParser.Syntax.Marshaling.ParameterMarshalSyntax"/>.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Utilities.AsParameterMarshalExtension.AsParameterMarshal(ILSourceParser.Syntax.Marshaling.MarshalTypeSyntax)">
+            <summary>
+            Converts <see cref="T:ILSourceParser.Syntax.Marshaling.MarshalTypeSyntax"/> to <see cref="T:ILSourceParser.Syntax.Marshaling.ParameterMarshalSyntax"/>.
+            </summary>
+            <param name="marshalType">The input type of marshal to process.</param>
+            <returns>An output marshal.</returns>
+        </member>
+        <member name="T:ILSourceParser.Utilities.GetAssemblyNameExtensions">
+            <summary>
+            A bunch of extension methods that retrieve names of assemblies from
+            given syntax nodes.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.AnonymousCustomAttributeSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="attribute">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.CustomAttributeSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="customAttribute">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.NonGenericTypeReferenceSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="reference">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.GenericTypeReferenceSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="reference">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.TypeReferenceSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="typeReference">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.TypeSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="type">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.MethodInvocationSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="invocation">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetAssemblyNameExtensions.GetAssemblyName(ILSourceParser.Syntax.MethodCallSyntax)">
+            <summary>
+            Returns the explicit name of the assembly from this syntax node. For example,
+            if the type reference is prefixed with <c>[System.Private.CoreLib]</c>, this
+            method will return <c>System.Private.CoreLib</c> as a string. If assembly reference
+            is omitted, this method returns <see langword="NULL"/>.
+            </summary>
+            <param name="call">The syntax node to get assembly name from.</param>
+            <returns>
+            If assembly name is explicitly emitted, returns the name of the assembly. Otherwise, returns <see langword="NULL"/>
+            </returns>
+        </member>
+        <member name="T:ILSourceParser.Utilities.GetByteExtension">
+            <summary>
+            Represents a single extension method <see cref="M:ILSourceParser.Utilities.GetByteExtension.GetBoolean(ILSourceParser.Syntax.BooleanLiteralSyntax)"/>
+            for <see cref="T:ILSourceParser.Syntax.BooleanLiteralSyntax"/>.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetByteExtension.GetBoolean(ILSourceParser.Syntax.BooleanLiteralSyntax)">
+            <summary>
+            Returns the boolean for <see cref="T:ILSourceParser.Syntax.BooleanLiteralSyntax"/> based on the value
+            of the literal, whether it is <c>true</c> or <c>false</c>.
+            </summary>
+            <param name="literal">The input boolean literal.</param>
+            <returns>A boolean from the boolean literal.</returns>
+        </member>
+        <member name="T:ILSourceParser.Utilities.GetRawBytesExtensions">
+            <summary>
+            A bunch of extension methods that return a byte array or enumerable
+            for the given byte node array or syntax node.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytes(System.Collections.Generic.IEnumerable{ILSourceParser.Syntax.ByteSyntax})">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="input">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytesAsEnumerable(System.Collections.Generic.IEnumerable{ILSourceParser.Syntax.ByteSyntax})">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="input">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytes(ILSourceParser.Syntax.CustomAttributeSyntax)">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="attribute">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytes(ILSourceParser.Syntax.AnonymousCustomAttributeSyntax)">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="attribute">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytes(ILSourceParser.Syntax.BaseCustomAttributeSyntax)">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="attribute">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytes(ILSourceParser.Syntax.PermissionSetSyntax)">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="permissionSet">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.GetRawBytesExtensions.GetRawBytes(ILSourceParser.Syntax.ByteArraySyntax)">
+            <summary>
+            Returns raw byte array or enumerable for the given input.
+            </summary>
+            <param name="byteArray">The input to convert to a byte sequence.</param>
+            <returns>A sequence of bytes that represent the array, node, or enumerable.</returns>
+        </member>
+        <member name="T:ILSourceParser.Utilities.MethodFlagSyntaxExtensions">
+            <summary>
+            Extensions for <see cref="T:ILSourceParser.Syntax.MethodFlagSyntax"/>.
+            </summary>
+        </member>
+        <member name="M:ILSourceParser.Utilities.MethodFlagSyntaxExtensions.GetRawValueAsUInt32(ILSourceParser.Syntax.MethodFlagSyntax)">
+            <summary>
+            Returns the flag of the <see cref="T:ILSourceParser.Syntax.MethodFlagSyntax"/> as <see cref="T:System.UInt32"/>.
+            </summary>
+            <param name="syntax">Input syntax node to process.</param>
+            <returns><see cref="T:System.UInt32"/></returns>
+        </member>
+        <member name="M:ILSourceParser.Utilities.MethodFlagSyntaxExtensions.GetMethodImplOptions(ILSourceParser.Syntax.MethodFlagSyntax)">
+            <summary>
+            Returns <see cref="T:System.Runtime.CompilerServices.MethodImplOptions"/> from the given <see cref="T:ILSourceParser.Syntax.MethodFlagSyntax"/>.
+            </summary>
+            <param name="syntax">Input syntax node to process.</param>
+            <returns><see cref="T:System.Runtime.CompilerServices.MethodImplOptions"/></returns>
+        </member>
+    </members>
+</doc>

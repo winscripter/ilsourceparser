@@ -26,7 +26,7 @@ public class PermissionSetTests
     [Fact]
     public void Test()
     {
-        var permissionSetParser = new Parser().ParsePermissionSet();
+        var permissionSetParser = Parser.ParsePermissionSet();
         const string input = @"
     .permissionset reqmin = (
         2e 01 80 8a 53 79 73 74 65 6d 2e 53 65 63 75 72

@@ -1148,9 +1148,9 @@ internal sealed class Parser
             return from whitespace in ParseWhiteSpaceTrivia()
                    from args in (
                         from _ in ParseWhiteSpaceTrivia() // We don't use whitespace here, we just need to skip whitespace
-                        from arg in ParseGenericParameterTypeConstraint()
-                           .Or<BaseGenericParameterSyntax>(ParseGenericParameterPrimitive())
-                           .Or(ParseGenericParameterReference())
+                        from arg in ParseGenericParameterPrimitive()
+                           .Or<BaseGenericParameterSyntax>(ParseGenericParameterReference())
+                           .Or(ParseGenericParameterTypeConstraint())
                            .Token()
                         from __ in Parse.Char(',').Optional().Token()
                         select arg

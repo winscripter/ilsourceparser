@@ -521,7 +521,7 @@ internal sealed class Parser
     internal static Parser<string> ParseHexNumber()
     {
         return (
-                from prefix in ParseHexPrefix()
+                from prefix in Parse.String("0x")
                 from numbers in ParseHexChar().AtLeastOnce().Text()
                 select $"0x{numbers}"
             )

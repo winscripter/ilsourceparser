@@ -3328,6 +3328,7 @@ internal sealed class Parser
             .Or<SyntaxNode>(ParseComment())
             .Or(ParseMaxStackDirective())
             .Or(ParseEntryPointDirective())
+            .Or(ParseTryFinallyBlock())
             .Or(ParseInstruction())
             .Or(ParseParamDirective())
             .Or(ParseCustomAttribute())
@@ -3640,6 +3641,42 @@ internal sealed class Parser
             .Or(ParseMethodDeclaration().Token()) // Yeah, methods can in fact be a top-level node
             .Or(ParseComment().Token());
 
+    }
+
+    internal Parser<TryBlockSyntax> ParseTryBlock()
+    {
+        return from whitespace in ParseWhiteSpaceTrivia()
+               from _try in Parse.String(".try").Token()
+               from openCurlyBrace in Parse.Char('{').Token()
+               from body in ParseNodePartOfMethodBody().Token().Until(Parse.Char('}').Token())
+               select new TryBlockSyntax(
+                   leadingTrivia: [whitespace],
+                   trailingTrivia: [],
+                   descendantNodes: body);
+    }
+
+    internal Parser<FinallyBlockSyntax> ParseFinallyBlock()
+    {
+        return from whitespace in ParseWhiteSpaceTrivia()
+               from @finally in Parse.String("finally").Token()
+               from openCurlyBrace in Parse.Char('{').Token()
+               from body in ParseNodePartOfMethodBody().Token().Until(Parse.Char('}').Token())
+               select new FinallyBlockSyntax(
+                   leadingTrivia: [whitespace],
+                   trailingTrivia: [],
+                   descendantNodes: body);
+    }
+
+    internal Parser<TryFinallyBlockSyntax> ParseTryFinallyBlock()
+    {
+        return from whitespace in ParseWhiteSpaceTrivia()
+               from @try in ParseTryBlock().Token()
+               from @finally in ParseFinallyBlock()
+               select new TryFinallyBlockSyntax(
+                   leadingTrivia: [whitespace],
+                   trailingTrivia: [],
+                   tryBlock: @try,
+                   finallyBlock: @finally);
     }
 
     internal Parser<ILRootNode> Root()

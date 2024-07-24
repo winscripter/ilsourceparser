@@ -8,8 +8,32 @@
     <NoWarn>CS1591</NoWarn>
     <AssemblyTitle>ILSourceParser</AssemblyTitle>
     <Company>winscripter</Company>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <Title>ILSourceParser</Title>
+    <Authors>winscripter</Authors>
+    <Description>Provides functionality for parsing Microsoft Intermediate Language (IL) syntax to a syntax tree with C#.</Description>
+    <Copyright>Copyright (c) winscripter, 2024</Copyright>
+    <PackageProjectUrl>https://github.com/winscripter/ILSourceParser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/winscripter/ILSourceParser</RepositoryUrl>
+    <PackageTags>il; msil; bytecode; dotnet; syntax; text; cil; ecma335</PackageTags>
+    <PackageIcon>ILSourceParser-icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Version>1.1.0</Version>
+    <PackageReleaseNotes>Added new feature to parse .try/finally blocks</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Documents\ILSourceParser-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\..\..\Downloads\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Sprache" Version="2.3.1" />

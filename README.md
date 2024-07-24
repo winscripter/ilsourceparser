@@ -3,6 +3,32 @@ This library for .NET provides functionality to parse IL source code. If you're 
 what the .NET application typically consists of. C#, Visual Basic, F#, and other well-known official .NET languages compile to IL bytecode. However,
 IL actually has its syntax as well. ILSourceParser parses the IL syntax into syntax nodes, making it easier to analyze IL.
 
+ILSourceParser aims to be the comprehensive parser for Microsoft Intermediate Language for .NET. Supports:
+ - Leading and trailing trivia
+ - Detecting line/column where a syntax error occurs
+ - Source file specification
+ - Asynchronous parsing
+ - Parsing the following types:
+   - Method parameters:
+     - &#92;out&#93;, &#92;opt&#93; and &#92;in&#93; prefixes
+     - Marshalling (IL `marshal()` function)
+     - Optional parameter names
+   - Method Locals:
+     - Supports `.locals` and `.locals init` directives in methods
+   - Type parsing:
+     - Optional assembly reference, such as `[System.Runtime]`
+     - Generic type references
+     - Generic parameter references like `!T` or !!T`
+     - Nested generic type references (e.g. generic type reference passed to parameter of generic type passed to parameter of generic type and so on)
+   - Attributes:
+     - Custom attributes
+     - Anonymous custom attributes (e.g. with byte data omitted)
+   - Comments:
+     - Inline and multiline comments
+   - Directives:
+     - Most if not all IL directives are supported, such as `.assembly`, `.property`, `.file`, `.file alignment`, `.hash algorithm`, `.permissionset`, `.imagebase`, `.event`, `.custom`, `.pack`, `.size`, `.field`, `.module`, `.line`, and more
+   - And more
+
 This library does not rely on any existing project and is not a port from another language, so chances are there could be some issues with this library. If
 you encounter one, please create a new issue post about it!
 

@@ -10,7 +10,7 @@ ILSourceParser aims to be the comprehensive parser for Microsoft Intermediate La
  - Asynchronous parsing
  - Parsing the following types:
    - Method parameters:
-     - &#92;out&#93;, &#92;opt&#93; and &#92;in&#93; prefixes
+     - &#91;out&#93;, &#91;opt&#93; and &#91;in&#93; prefixes
      - Marshalling (IL `marshal()` function)
      - Optional parameter names
    - Method Locals:

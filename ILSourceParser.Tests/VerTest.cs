@@ -8,7 +8,7 @@ public class VerTest
     public void Test()
     {
         const string input = @".ver 1:2:3:4";
-        var result = new Parser().ParseVerDirective().Parse(input);
+        var result = Parser.ParseVerDirective().Parse(input);
 
         Assert.Equal('1', result.Major);
         Assert.Equal('2', result.Minor);

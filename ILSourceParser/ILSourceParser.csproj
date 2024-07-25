@@ -22,7 +22,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Version>1.2.1</Version>
-    <PackageReleaseNotes>Added extension method 'GetInstructionName' to InstructionSyntax and every other instruction syntax node</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed a very simple bug where ILSourceParser.Utilities.InstructionUtilities.GetInstructionName(InstructionSyntax) was
+supposed to be an extension method</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

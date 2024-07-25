@@ -7,11 +7,12 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <NoWarn>CS1591</NoWarn>
     <AssemblyTitle>ILSourceParser</AssemblyTitle>
+      <LangVersion>12.0</LangVersion>
     <Company>winscripter</Company>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <AssemblyVersion>1.2.1.0</AssemblyVersion>
     <Title>ILSourceParser</Title>
     <Authors>winscripter</Authors>
-    <Description>Provides functionality for parsing Microsoft Intermediate Language (IL) syntax to a syntax tree with C#.</Description>
+    <Description>Provides functionality for parsing Microsoft Intermediate Language (IL) syntax to a syntax tree with .NET.</Description>
     <Copyright>Copyright (c) winscripter, 2024</Copyright>
     <PackageProjectUrl>https://github.com/winscripter/ILSourceParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/winscripter/ILSourceParser</RepositoryUrl>
@@ -20,8 +21,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>1.1.0</Version>
-    <PackageReleaseNotes>Added new feature to parse .try/finally blocks</PackageReleaseNotes>
+    <Version>1.2.1</Version>
+    <PackageReleaseNotes>Added extension method 'GetInstructionName' to InstructionSyntax and every other instruction syntax node</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

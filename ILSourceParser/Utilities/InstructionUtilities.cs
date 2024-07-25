@@ -18,7 +18,7 @@ public static class InstructionUtilities
     /// <param name="instruction">The input instruction to get name of.</param>
     /// <returns>The name of the instruction as a string.</returns>
     /// <exception cref="ArgumentException">Thrown when the input instruction is not valid.</exception>
-    public static string GetInstructionName(InstructionSyntax instruction)
+    public static string GetInstructionName(this InstructionSyntax instruction)
     {
         return instruction switch
         {

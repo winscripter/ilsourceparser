@@ -531,25 +531,21 @@ internal sealed class Parser
             );
     }
 
-    internal Parser<VerDirectiveSyntax> ParseVerDirective()
+    internal static Parser<VerDirectiveSyntax> ParseVerDirective()
     {
-        try
-        {
-            return from whitespace in ParseWhiteSpaceTrivia()
-                   from ver in Parse.String(".ver").Token()
-                   from major in ParseVerDirectiveDigit(true)
-                   from minor in ParseVerDirectiveDigit(true)
-                   from build in ParseVerDirectiveDigit(true)
-                   from rev in ParseVerDirectiveDigit(false)
-                   select new VerDirectiveSyntax(major, minor, build, rev, [whitespace], []);
-        }
-        catch (ParseException e)
-        {
-            return AddErrorAndGet(
-                e.Position,
-                Parse.Return(new VerDirectiveSyntax(
-                    '0', '0', '0', '0', [], [])));
-        }
+        return from whitespace in ParseWhiteSpaceTrivia()
+               from ver in Parse.String(".ver").Token()
+               from major in ParseVerDirectiveDigit(true)
+               from minor in ParseVerDirectiveDigit(true)
+               from build in ParseVerDirectiveDigit(true)
+               from rev in ParseVerDirectiveDigit(false)
+               select new VerDirectiveSyntax(
+                   leadingTrivia: [whitespace],
+                   trailingTrivia: [],
+                   major: major,
+                   minor: minor,
+                   build: build,
+                   revision: rev);
     }
 
     internal static Parser<HashAlgorithmTrivia> ParseHashAlgorithmTrivia()

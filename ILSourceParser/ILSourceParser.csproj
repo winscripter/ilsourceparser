@@ -9,7 +9,7 @@
     <AssemblyTitle>ILSourceParser</AssemblyTitle>
       <LangVersion>12.0</LangVersion>
     <Company>winscripter</Company>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
+    <AssemblyVersion>1.3.0.0</AssemblyVersion>
     <Title>ILSourceParser</Title>
     <Authors>winscripter</Authors>
     <Description>Provides functionality for parsing Microsoft Intermediate Language (IL) syntax to a syntax tree with .NET.</Description>
@@ -21,9 +21,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>1.2.1</Version>
-    <PackageReleaseNotes>Fixed a very simple bug where ILSourceParser.Utilities.InstructionUtilities.GetInstructionName(InstructionSyntax) was
-supposed to be an extension method</PackageReleaseNotes>
+    <Version>1.3.0</Version>
+    <PackageReleaseNotes>1. Add support for parsing `.corflags` and `.stackreserve` assembler directives in root declarations
+2. Minor XML documentation changes
+3. Minor README changes</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,6 +41,10 @@ supposed to be an extension method</PackageReleaseNotes>
   <ItemGroup>
     <PackageReference Include="Sprache" Version="2.3.1" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
 </Project>

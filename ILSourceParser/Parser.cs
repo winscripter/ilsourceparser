@@ -3632,6 +3632,8 @@ internal sealed class Parser
             .Or(ParseFileAlignmentDirective().Token())
             .Or(ParseFileDirective().Token())
             .Or(ParseModuleDirective().Token())
+            .Or(ParseCorFlagsDirective().Token())
+            .Or(ParseStackReserveDirective().Token())
             .Or(ParseLineDirective().Token())
             .Or(ParseClassDeclaration().Token())
             .Or(ParseMethodDeclaration().Token()) // Yeah, methods can in fact be a top-level node

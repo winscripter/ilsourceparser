@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 namespace ILSourceParser.Syntax;
 
 /// <summary>
-/// This node is associated with the following kinds:
+/// This node is associated with the following nodes:
 /// <list type="bullet">
 ///   <item>
 ///     <see cref="GetAccessorSyntax"/>  
